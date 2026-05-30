@@ -55,11 +55,6 @@ const mainNavItems: NavItem[] = [
         icon: Ticket,
     },
     {
-        title: 'Prescriptions',
-        href: prescriptionsIndex(),
-        icon: Stethoscope,
-    },
-    {
         title: 'Payment Methods',
         href: paymentMethodsIndex(),
         icon: CreditCard,

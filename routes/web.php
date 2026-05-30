@@ -17,7 +17,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('coupons', \App\Http\Controllers\CouponController::class);
 
     Route::resource('orders', \App\Http\Controllers\OrderController::class)->except(['destroy']);
-    Route::resource('prescriptions', \App\Http\Controllers\PrescriptionController::class);
 
     Route::get('invoices', [\App\Http\Controllers\InvoiceController::class, 'index'])->name('invoices.index');
     Route::get('invoices/{invoice}', [\App\Http\Controllers\InvoiceController::class, 'show'])->name('invoices.show');
