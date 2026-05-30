@@ -21,7 +21,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = OrderResource::collection(Order::with(['customer', 'invoice'])->latest()->paginate(12)->withQueryString());
+        $orders = OrderResource::collection(Order::with(['customer', 'currentInvoice'])->latest()->paginate(12)->withQueryString());
         return Inertia::render('orders/index', [
             'orders' => $orders
         ]);
@@ -58,7 +58,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load(['customer', 'invoice.payments.paymentMethod', 'invoice.coupon', 'items.product', 'user']);
+        $order->load(['customer', 'currentInvoice.payments.paymentMethod', 'currentInvoice.coupon', 'invoices.payments.paymentMethod', 'invoices.coupon', 'items.product', 'user']);
         return Inertia::render('orders/show', [
             'order' => new OrderResource($order)
         ]);
@@ -69,7 +69,7 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        $order->load(['customer', 'invoice.payments.paymentMethod', 'invoice.coupon', 'items.product', 'user']);
+        $order->load(['customer', 'currentInvoice.payments.paymentMethod', 'currentInvoice.coupon', 'items.product', 'user']);
         return Inertia::render('orders/edit', [
             'order' => new OrderResource($order),
             'customers' => Customer::all(),

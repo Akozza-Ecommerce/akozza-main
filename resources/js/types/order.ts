@@ -8,7 +8,8 @@ export interface Order {
     id: number;
     customer: Customer;
     user: User;
-    invoice: Invoice;
+    currentInvoice: Invoice;
+    invoices: Invoice[];
     subtotal: number;
     number: string;
     status: string;

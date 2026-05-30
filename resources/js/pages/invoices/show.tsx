@@ -41,11 +41,6 @@ export default function Show({ invoice }: { invoice: Invoice }) {
                 />
 
                 <div className="flex gap-2">
-                    <Button variant="outline" asChild>
-                        <Link href={edit(invoice)}>
-                            <Pencil className="mr-2 h-4 w-4" /> Edit
-                        </Link>
-                    </Button>
                     <Button variant="outline" onClick={() => window.print()}>
                         <Printer className="mr-2 h-4 w-4" /> Print
                     </Button>

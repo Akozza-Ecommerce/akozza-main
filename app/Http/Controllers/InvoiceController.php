@@ -26,19 +26,6 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(InvoiceRequest $request)
-    {
-        $validated = $request->validated();
-        $validated['user_id'] = $request->user()->id;
-
-        $this->invoiceService->createInvoice($validated);
-
-        return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(Invoice $invoice)
@@ -47,20 +34,5 @@ class InvoiceController extends Controller
         return Inertia::render('invoices/show', [
             'invoice' => new InvoiceResource($invoice)
         ]);
-    }
-
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(InvoiceRequest $request, Invoice $invoice)
-    {
-        // dd($request->all());
-        $validated = $request->validated();
-        $validated['user_id'] = $request->user()->id;
-
-        $this->invoiceService->updateInvoice($invoice, $validated);
-
-        return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully.');
     }
 }

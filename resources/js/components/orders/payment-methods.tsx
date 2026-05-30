@@ -12,6 +12,7 @@ import {
 } from '../ui/select';
 import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
+import InputError from '../input-error';
 
 interface PaymentMethodsProps {
     data: any;
@@ -136,6 +137,8 @@ export default function PaymentMethods({
                         No Payments added yet. Click "Add" to start.
                     </div>
             )}
+
+            <InputError message={errors.payments} className="mt-2" />
 
             <Separator className="mt-10 mb-6" />
 

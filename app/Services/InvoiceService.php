@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\InvoiceStatus;
 use App\Enums\InvoicePaymentStatus;
 use App\Enums\OrderStatus;
+use App\Events\InvoiceProcessed;
 use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Product;
@@ -54,6 +55,7 @@ class InvoiceService
             ]);
 
             $this->storeInvoicePayments($invoice, $data['payments']);
+            event(new InvoiceProcessed($invoice, $order));
         });
     }
 
@@ -72,7 +74,6 @@ class InvoiceService
     private function checkInvoiceStatus(Order $order, float $totalAmount, float $paidAmount): InvoiceStatus
     {
         if ($paidAmount === $totalAmount) {
-            $order->update(['status' => OrderStatus::COMPLETED]);
             return InvoiceStatus::PAID;
         } elseif ($paidAmount > 0) {
             return InvoiceStatus::PARTIALLY_PAID;

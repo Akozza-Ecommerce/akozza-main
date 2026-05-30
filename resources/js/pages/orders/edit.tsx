@@ -26,19 +26,19 @@ export default function Edit({
     const { data, setData, put, processing, errors } = useForm({
         customer_id: order.customer.id.toString(),
         payments:
-            order.invoice.payments?.map((p) => ({
+            order.currentInvoice.payments?.map((p) => ({
                 payment_method_id: p.payment_method_id.toString(),
                 amount: p.amount,
             })) || [],
-        coupon_id: order.invoice.coupon?.id.toString() || '',
+        coupon_id: order.currentInvoice.coupon?.id.toString() || '',
         date: order.date.split('T')[0], // Extract just the date part if it's a datetime
         status: order.status,
         notes: order.note || '',
         subtotal_amount: order.subtotal,
-        discount_amount: order.invoice.discount_amount,
-        coupon_amount: order.invoice.coupon_amount || 0,
-        tax_amount: order.invoice.tax_amount,
-        total_amount: order.invoice.total_amount,
+        discount_amount: order.currentInvoice.discount_amount || 0,
+        coupon_amount: order.currentInvoice.coupon_amount || 0,
+        tax_amount: order.currentInvoice.tax_amount || 0,
+        total_amount: order.currentInvoice.total_amount || 0,
         items:
             order.items?.map((i) => ({
                 id: i.id,
@@ -70,7 +70,7 @@ export default function Edit({
                 paymentMethods={paymentMethods}
                 products={products}
                 coupons={coupons}
-                invoiceCoupon={order.invoice.coupon || null}
+                invoiceCoupon={order.currentInvoice.coupon || null}
                 onSubmit={submit}
             />
         </div>

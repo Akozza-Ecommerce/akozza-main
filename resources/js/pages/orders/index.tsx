@@ -27,7 +27,11 @@ export default function Index({ orders }: { orders: PaginatedType<Order> }) {
         },
         { 
             header: 'Total', 
-            cell: (order: Order) => <span className="font-medium">{formatCurrency(order.invoice?.total_amount)}</span> 
+            cell: (order: Order) => <span className="font-medium">{formatCurrency(order.currentInvoice?.total_amount)}</span> 
+        },
+        { 
+            header: 'Due', 
+            cell: (order: Order) => <span className="font-medium text-red-600">{formatCurrency(order.currentInvoice?.due_amount)}</span> 
         },
         { 
             header: 'Status', 

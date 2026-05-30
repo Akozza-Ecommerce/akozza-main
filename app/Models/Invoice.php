@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
-    'user_id', 'customer_id', 'number', 'discount_amount', 'coupon_amount', 'coupon_id', 
-    'tax_rate', 'tax_amount', 'due_amount', 'paid_amount', 'subtotal', 
+    'user_id', 'order_id', 'customer_id', 'number', 'discount_amount', 'coupon_amount',
+    'coupon_id', 'tax_rate', 'tax_amount', 'due_amount', 'paid_amount', 'subtotal', 
     'total_amount', 'note', 'pdf', 'status', 'date'
 ])]
 class Invoice extends Model

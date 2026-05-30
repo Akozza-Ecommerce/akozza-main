@@ -8,7 +8,7 @@ enum InvoiceStatus: string
     case UNPAID = 'unpaid';
     case PAID = 'paid';
     case PARTIALLY_PAID = 'partially_paid';
-    case CANCELLED = 'cancelled';
+    case CANCELED = 'canceled';
     case REPLACED = 'replaced';
 
     public function getLabel(): string
@@ -17,7 +17,7 @@ enum InvoiceStatus: string
             self::UNPAID => 'Unpaid',
             self::PAID => 'Paid',
             self::PARTIALLY_PAID => 'Partially Paid',
-            self::CANCELLED => 'Cancelled',
+            self::CANCELED => 'Canceled',
             self::REPLACED => 'Replaced',
         };
     }

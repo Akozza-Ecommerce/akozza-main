@@ -11,10 +11,11 @@ import {
 } from '@/components/ui/table';
 
 import { edit, index, show } from '@/routes/orders';
+import { show as showInvoice } from '@/routes/invoices';
 import type { Order } from '@/types';
 import { Link } from '@inertiajs/react';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { Pencil, Printer, Download } from 'lucide-react';
+import { Pencil, Printer, Download, Eye } from 'lucide-react';
 
 export default function Show({ order }: { order: Order }) {
     const getStatusColor = (status: string) => {
@@ -85,23 +86,23 @@ export default function Show({ order }: { order: Order }) {
                                 {order.status}
                             </p>
                         </div>
-                        {order.invoice.payments && (
+                        {order.currentInvoice?.payments && (
                             <div>
                                 <h3 className="mb-2 text-sm font-medium tracking-wider text-muted-foreground uppercase">
                                     Payment Methods
                                 </h3>
                                 <p className="font-medium">
-                                    {order.invoice.payments?.map((payment) => payment.payment_method_name).join(', ')}
+                                    {order.currentInvoice?.payments?.map((payment) => payment.payment_method_name).join(', ')}
                                 </p>
                             </div>
                         )}
-                        {order.invoice.coupon && (
+                        {order.currentInvoice?.coupon && (
                             <div className="col-span-2 mt-2">
                                 <h3 className="mb-2 text-sm font-medium tracking-wider text-muted-foreground uppercase">
                                     Coupon Applied
                                 </h3>
                                 <p className="font-medium">
-                                    {order.invoice.coupon.code}
+                                    {order.currentInvoice?.coupon.code}
                                 </p>
                             </div>
                         )}
@@ -178,7 +179,7 @@ export default function Show({ order }: { order: Order }) {
                                     Discount
                                 </span>
                                 <span className="font-medium text-red-500">
-                                    -{formatCurrency(order.invoice.discount_amount)}
+                                    -{formatCurrency(order.currentInvoice?.discount_amount)}
                                 </span>
                             </div>
                             <div className="flex justify-between text-sm">
@@ -186,7 +187,7 @@ export default function Show({ order }: { order: Order }) {
                                     Coupon Amount
                                 </span>
                                 <span className="font-medium text-red-500">
-                                    -{formatCurrency(order.invoice.coupon_amount)}
+                                    -{formatCurrency(order.currentInvoice?.coupon_amount)}
                                 </span>
                             </div>
                             <div className="flex justify-between text-sm">
@@ -194,7 +195,7 @@ export default function Show({ order }: { order: Order }) {
                                     Tax
                                 </span>
                                 <span className="font-medium">
-                                    {formatCurrency(order.invoice.tax_amount)}
+                                    {formatCurrency(order.currentInvoice?.tax_amount)}
                                 </span>
                             </div>
                             <div className="flex justify-between text-sm">
@@ -202,7 +203,7 @@ export default function Show({ order }: { order: Order }) {
                                     Paid Amount
                                 </span>
                                 <span className="font-medium text-green-600">
-                                    {formatCurrency(order.invoice.paid_amount)}
+                                    {formatCurrency(order.currentInvoice?.paid_amount)}
                                 </span>
                             </div>
                             <div className="flex justify-between text-sm">
@@ -210,18 +211,91 @@ export default function Show({ order }: { order: Order }) {
                                     Due Amount
                                 </span>
                                 <span className="font-medium">
-                                    {formatCurrency(order.invoice.due_amount)}
+                                    {formatCurrency(order.currentInvoice?.due_amount)}
                                 </span>
                             </div>
                             <div className="mt-3 flex justify-between border-t border-neutral-200 pt-3 dark:border-neutral-800">
                                 <span className="font-bold">Total</span>
                                 <span className="text-xl font-bold">
-                                    {formatCurrency(order.invoice.total_amount)}
+                                    {formatCurrency(order.currentInvoice?.total_amount)}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {/* Invoices Table */}
+                {order.invoices && order.invoices.length > 0 && (
+                    <div className="overflow-hidden rounded-lg border">
+                        <h3 className="border-b px-6 py-4 text-lg font-semibold">
+                            Order Invoices
+                        </h3>
+                        <Table>
+                            <TableHeader className="bg-muted/50">
+                                <TableRow>
+                                    <TableHead>Invoice #</TableHead>
+                                    <TableHead>Date</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead className="text-right">Total</TableHead>
+                                    <TableHead className="text-right">Paid</TableHead>
+                                    <TableHead className="text-right">Due</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {order.invoices.map((invoice) => (
+                                    <TableRow
+                                        key={invoice.id}
+                                        className={
+                                            invoice.id === order.currentInvoice?.id
+                                                ? 'bg-green-50 dark:bg-green-900/20'
+                                                : ''
+                                        }
+                                    >
+                                        <TableCell className="font-medium">
+                                            INV-{invoice.number}
+                                            {invoice.id === order.currentInvoice?.id && (
+                                                <span className="ml-2 text-xs font-medium text-green-600">
+                                                    (Current)
+                                                </span>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>
+                                            {formatDate(invoice.date)}
+                                        </TableCell>
+                                        <TableCell>
+                                            <span
+                                                className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium uppercase tracking-wider ${invoice.id === order.currentInvoice?.id ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-400'}`}
+                                            >
+                                                {invoice.status}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            {formatCurrency(invoice.total_amount)}
+                                        </TableCell>
+                                        <TableCell className="text-right text-green-600">
+                                            {formatCurrency(invoice.paid_amount)}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            {formatCurrency(invoice.due_amount)}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                asChild
+                                            >
+                                                <Link href={showInvoice(invoice)}>
+                                                    <Eye className="h-4 w-4" />
+                                                </Link>
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
             </div>
         </div>
     );

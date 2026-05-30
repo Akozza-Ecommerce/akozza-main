@@ -16,11 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('coupon_id')->constrained('coupons')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('coupon_id')->nullable()->constrained('coupons')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('number');
             $table->integer('tax_rate');
-            $table->decimal('discount_amount', 10, 2)->nullable();
-            $table->decimal('coupon_amount', 10, 2)->nullable();
+            $table->decimal('discount_amount', 10, 2)->default(0);
+            $table->decimal('coupon_amount', 10, 2)->default(0);
             $table->decimal('tax_amount', 10, 2);
             $table->decimal('due_amount', 10, 2);
             $table->decimal('paid_amount', 10, 2);

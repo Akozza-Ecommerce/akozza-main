@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\InvoiceStatus;
 use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable([
     'user_id', 'customer_id', 'number',
@@ -37,5 +39,10 @@ class Order extends Model
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    public function currentInvoice(): HasOne
+    {
+        return $this->hasOne(Invoice::class)->whereNotIn('status', [InvoiceStatus::REPLACED, InvoiceStatus::CANCELED])->latestOfMany();
     }
 }

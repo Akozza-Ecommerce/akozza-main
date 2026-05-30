@@ -43,27 +43,13 @@ export default function Index({ invoices }: { invoices: PaginatedType<Invoice> }
                             <Eye className="h-4 w-4" />
                         </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href={edit(invoice)}>
-                            <Pencil className="h-4 w-4" />
-                        </Link>
-                    </Button>
                 </div>
             )
         }
     ];
 
     return (
-
             <div className="flex flex-col gap-6 p-8">
-                <PageHeader title="Invoices" description="Manage billing and invoices.">
-                    <Button asChild>
-                        <Link href={create()}>
-                            <Plus className="mr-2 h-4 w-4" /> Create Invoice
-                        </Link>
-                    </Button>
-                </PageHeader>
-                
                 <DataTable data={invoices.data} columns={columns} />
             </div>
     );
