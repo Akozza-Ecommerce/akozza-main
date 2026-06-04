@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained('tenants')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('name');
-            $table->string('phone_number', 50)->unique();
+            $table->string('phone_number', 50);
             $table->integer('points')->nullable()->default(0);
             $table->timestamps();
+
+            $table->unique(['tenant_id', 'store_id', 'phone_number']);
         });
     }
 

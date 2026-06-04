@@ -12,11 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('coupon_targets', function (Blueprint $table) {
+            $table->id();
+            
+            $table->foreignId('tenant_id')->constrained('tenants')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('coupon_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->nullable()->constrained()->onDelete('cascade');
 
-            $table->primary(['coupon_id', 'category_id', 'product_id']);
+            $table->index(['tenant_id', 'store_id', 'coupon_id']);
         });
     }
 

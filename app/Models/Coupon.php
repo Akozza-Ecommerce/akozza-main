@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'code', 'value', 'limit', 'minimum_invoice_amount', 'note', 'type', 'target', 'is_active', 'start_date', 'end_date'])]
+#[Fillable(['user_id', 'tenant_id', 'store_id', 'code', 'value', 'limit', 'minimum_invoice_amount', 'note', 'type', 'target', 'is_active', 'start_date', 'end_date'])]
 class Coupon extends Model
 {
     use HasActiveState;

@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained('tenants')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('code');
-            $table->decimal('value');
+            $table->decimal('value', 10, 2);
             $table->integer('limit');
-            $table->decimal('minimum_invoice_amount');
+            $table->decimal('minimum_invoice_amount', 10, 2);
             $table->string('note')->nullable();
             $table->enum('type', ['percentage', 'fixed']);
             $table->enum('target', ['category', 'product']);

@@ -14,8 +14,24 @@ class CouponSeeder extends Seeder
      */
     public function run(): void
     {
-        $productIds = Product::pluck('id')->toArray();
-        $categoryIds = Category::pluck('id')->toArray();
+        $seedProduct = Product::inRandomOrder()->first();
+
+        if (! $seedProduct) {
+            return;
+        }
+
+        $tenantId = $seedProduct->tenant_id;
+        $storeId = $seedProduct->store_id;
+
+        $productIds = Product::where('tenant_id', $tenantId)
+            ->where('store_id', $storeId)
+            ->pluck('id')
+            ->toArray();
+
+        $categoryIds = Category::where('tenant_id', $tenantId)
+            ->where('store_id', $storeId)
+            ->pluck('id')
+            ->toArray();
 
         $couponsData = [
             [
@@ -30,7 +46,7 @@ class CouponSeeder extends Seeder
                 'minimum_invoice_amount' => 100,
                 'target' => 'product',
                 'days' => ['Monday', 'Wednesday', 'Friday'],
-                'target_ids' => array_slice($productIds, 0, 3)
+                'target_ids' => array_slice($productIds, 0, 3),
             ],
             [
                 'code' => 'FIXED20',
@@ -44,7 +60,7 @@ class CouponSeeder extends Seeder
                 'minimum_invoice_amount' => 100,
                 'target' => 'category',
                 'days' => ['Saturday', 'Sunday'],
-                'target_ids' => array_slice($categoryIds, 0, 2)
+                'target_ids' => array_slice($categoryIds, 0, 2),
             ],
             [
                 'code' => 'SUMMER25',
@@ -58,11 +74,14 @@ class CouponSeeder extends Seeder
                 'minimum_invoice_amount' => 100,
                 'target' => 'product',
                 'days' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                'target_ids' => array_slice($productIds, 3, 3)
+                'target_ids' => array_slice($productIds, 0, min(3, count($productIds))),
             ],
         ];
 
         foreach ($couponsData as $data) {
+            $data['tenant_id'] = $tenantId;
+            $data['store_id'] = $storeId;
+
             $days = $data['days'] ?? [];
             $targetIds = $data['target_ids'] ?? [];
             $targetType = $data['target'];
@@ -72,14 +91,26 @@ class CouponSeeder extends Seeder
             $coupon = Coupon::create($data);
 
             foreach ($days as $day) {
-                $coupon->days()->create(['day_of_week' => $day]);
+                $coupon->days()->create([
+                    'tenant_id' => $tenantId,
+                    'store_id' => $storeId,
+                    'day_of_week' => $day,
+                ]);
             }
 
             foreach ($targetIds as $id) {
                 if ($targetType === 'product') {
-                    $coupon->targets()->create(['product_id' => $id]);
+                    $coupon->targets()->create([
+                        'tenant_id' => $tenantId,
+                        'store_id' => $storeId,
+                        'product_id' => $id,
+                    ]);
                 } else {
-                    $coupon->targets()->create(['category_id' => $id]);
+                    $coupon->targets()->create([
+                        'tenant_id' => $tenantId,
+                        'store_id' => $storeId,
+                        'category_id' => $id,
+                    ]);
                 }
             }
         }

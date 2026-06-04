@@ -13,8 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test user if not exists
-        User::firstOrCreate(
+        $adminUser = User::firstOrCreate(
             ['email' => 'admin@admin.net'],
             [
                 'name' => 'Admin User',
@@ -22,13 +21,39 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $vendorUser = User::firstOrCreate(
+            ['email' => 'vendor@admin.net'],
+            [
+                'name' => 'Vendor User',
+                'password' => bcrypt('12345678'),
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'cashier@admin.net'],
+            [
+                'name' => 'Cashier User',
+                'password' => bcrypt('12345678'),
+            ]
+        );
+
         $this->call([
+            StoreSeeder::class,
+            TenantSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
             CategorySeeder::class,
             CustomerSeeder::class,
             ProductSeeder::class,
             PaymentMethodSeeder::class,
             CouponSeeder::class,
-            PrescriptionSeeder::class,
         ]);
+
+        if (method_exists($adminUser, 'assignRole')) {
+            $adminUser->assignRole('admin');
+        }
+        if (method_exists($vendorUser, 'assignRole')) {
+            $vendorUser->assignRole('vendor');
+        }
     }
 }

@@ -10,7 +10,7 @@ enum OrderStatus: string
     case CANCELED = 'canceled';
     case AWAITING_PAYMENT = 'awaiting_payment';
 
-    public function gerLabel(): string {
+    public function getLabel(): string {
         return match($this) {
             self::PENDING => 'Pending',
             self::INPROGRESS => 'In Progress',

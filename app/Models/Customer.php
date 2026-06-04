@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'name', 'phone_number', 'points'])]
+#[Fillable(['user_id', 'tenant_id', 'store_id', 'name', 'phone_number', 'points'])]
 class Customer extends Model
 {
     /**

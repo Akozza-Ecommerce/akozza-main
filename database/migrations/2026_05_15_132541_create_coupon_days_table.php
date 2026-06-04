@@ -12,6 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('coupon_days', function (Blueprint $table) {
+            $table->foreignId('tenant_id')->constrained('tenants')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('coupon_id')->constrained()->onDelete('cascade');
             $table->enum('day_of_week', [
                 'Sunday',

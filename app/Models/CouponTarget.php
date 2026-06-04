@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['coupon_id', 'category_id', 'product_id'])]
+#[Fillable(['coupon_id', 'tenant_id', 'store_id', 'category_id', 'product_id'])]
 class CouponTarget extends Model
 {
     public $timestamps = false;
