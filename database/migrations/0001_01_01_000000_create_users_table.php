@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserStatus;
+use App\Enums\UserType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,11 +16,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('username')->unique();
             $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
-            $table->boolean('is_platform_user')->default(false);
             $table->string('password');
             $table->string('status')->default(UserStatus::DEFAULT);
+            $table->string('type')->default(UserType::DEFAULT);
             $table->rememberToken();
             $table->timestamps();
         });

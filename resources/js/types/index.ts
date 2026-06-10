@@ -9,6 +9,7 @@ export type * from './invoice';
 export type * from './prescription';
 export type * from './category';
 export type * from './order';
+export type * from './vendor';
 
 export interface MetaPagination {
     current_page: number;

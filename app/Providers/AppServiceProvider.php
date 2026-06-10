@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
+use App\Authorization\AdminGates;
+use App\Authorization\Gates\GateRegistrar;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Laravel\Fortify\Contracts\RegisterResponse;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+        //     public function toResponse($request)
+        //     {
+        //         return redirect()->route('orphan.dashboard');
+        //     }
+        // });
     }
 
     /**
@@ -26,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
     {
         JsonResource::withoutWrapping();
         $this->configureDefaults();
+        GateRegistrar::register();
     }
 
     /**
@@ -39,14 +48,15 @@ class AppServiceProvider extends ServiceProvider
             app()->isProduction(),
         );
 
-        Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(12)
+        Password::defaults(
+            fn(): ?Password => app()->isProduction()
+                ? Password::min(12)
                 ->mixedCase()
                 ->letters()
                 ->numbers()
                 ->symbols()
                 ->uncompromised()
-            : null,
+                : null,
         );
     }
 }

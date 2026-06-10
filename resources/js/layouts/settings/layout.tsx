@@ -1,16 +1,39 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
-import { edit as editAppearance } from '@/routes/appearance';
-import { edit } from '@/routes/profile';
-import { edit as editSecurity } from '@/routes/security';
+import { edit as adminEditAppearance } from '@/routes/admin/appearance';
+import { edit as vendorEditAppearance } from '@/routes/vendor/appearance';
+import { edit as adminEdit } from '@/routes/admin/profile';
+import { edit as vendorEdit } from '@/routes/vendor/profile';
+import { edit as adminEditSecurity } from '@/routes/admin/security';
+import { edit as vendorEditSecurity } from '@/routes/vendor/security';
 import type { NavItem } from '@/types';
 
-const sidebarNavItems: NavItem[] = [
+
+
+export default function SettingsLayout({ children }: PropsWithChildren) {
+    const { isCurrentOrParentUrl } = useCurrentUrl();
+    const { user } = usePage().props.auth;
+
+    function edit() {
+        return user.isPlatformUser ? adminEdit() : vendorEdit();
+    }
+
+    function editSecurity() {
+        return user.isPlatformUser ? adminEditSecurity() : vendorEditSecurity();
+    }
+
+    function editAppearance() {
+        return user.isPlatformUser
+            ? adminEditAppearance()
+            : vendorEditAppearance();
+    }
+
+    const sidebarNavItems: NavItem[] = [
     {
         title: 'Profile',
         href: edit(),
@@ -27,9 +50,6 @@ const sidebarNavItems: NavItem[] = [
         icon: null,
     },
 ];
-
-export default function SettingsLayout({ children }: PropsWithChildren) {
-    const { isCurrentOrParentUrl } = useCurrentUrl();
 
     return (
         <div className="px-4 py-6">

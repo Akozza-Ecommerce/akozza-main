@@ -13,9 +13,11 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $tenantId = Tenant::first()->id;
-
         $permissions = [
+            'vendors.view',
+            'vendors.create',
+            'vendors.edit',
+            'vendors.delete',
             'view products',
             'manage products',
             'view customers',

@@ -54,6 +54,14 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'root_domain' => env('ROOT_DOMAIN'),
+    
+    'admin_dashboard_domain' => env('ADMIN_DASHBOARD_DOMAIN'),
+    'vendor_dashboard_domain' => env('VENDOR_DASHBOARD_DOMAIN'),
+    
+    'admin_session_domain' => env('ADMIN_DASHBOARD_DOMAIN'),
+    'vendor_session_domain' => env('VENDOR_DASHBOARD_DOMAIN'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

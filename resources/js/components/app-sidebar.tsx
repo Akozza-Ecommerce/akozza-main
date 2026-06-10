@@ -13,13 +13,13 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard } from '@/routes/admin';
 import { index as couponsIndex } from '@/routes/coupons';
 import { index as customersIndex } from '@/routes/customers';
 import { index as invoicesIndex } from '@/routes/invoices';
 import { index as paymentMethodsIndex } from '@/routes/payment-methods';
 import { index as productsIndex } from '@/routes/products';
-import { index as vendorsIndex } from '@/routes/vendors';
+import { index as vendorsIndex } from '@/routes/admin/vendors';
 import { index as ordersIndex } from '@/routes/orders';
 import type { NavItem } from '@/types';
 
@@ -88,22 +88,25 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { navigation } = usePage().props;
+    console.log('navigation: ', navigation);
+    
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                            {/* <Link href={dashboard()} prefetch>
                                 <AppLogo />
-                            </Link>
+                            </Link> */}
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={adminNavItems} />
+                <NavMain items={navigation} />
             </SidebarContent>
 
             <SidebarFooter>

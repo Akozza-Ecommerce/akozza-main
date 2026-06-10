@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Tenant;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
@@ -17,15 +18,7 @@ class RoleSeeder extends Seeder
 
         $roles = [
             'admin' => [
-                'view products',
-                'manage products',
-                'view customers',
-                'manage customers',
-                'view orders',
-                'manage orders',
-                'view invoices',
-                'manage coupons',
-                'manage settings',
+                ...Permission::pluck('name')->toArray(),
             ],
             'vendor' => [
                 'view products',

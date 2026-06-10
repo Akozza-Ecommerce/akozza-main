@@ -12,6 +12,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return inertia('admin/dashboard');
+        return inertia('admin/dashboard', ['data' => 'Admin Dashboard Data']);
     }
 }

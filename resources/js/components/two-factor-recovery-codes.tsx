@@ -1,4 +1,4 @@
-import { Form } from '@inertiajs/react';
+import { Form, usePage } from '@inertiajs/react';
 import { Eye, EyeOff, LockKeyhole, RefreshCw } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import AlertError from '@/components/alert-error';
@@ -10,7 +10,8 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { regenerateRecoveryCodes } from '@/routes/two-factor';
+import { regenerateRecoveryCodes as adminRegenerateRecoveryCodes } from '@/routes/admin/two-factor';
+import { regenerateRecoveryCodes as vendorRegenerateRecoveryCodes } from '@/routes/vendor/two-factor';
 
 type Props = {
     recoveryCodesList: string[];
@@ -26,6 +27,8 @@ export default function TwoFactorRecoveryCodes({
     const [codesAreVisible, setCodesAreVisible] = useState<boolean>(false);
     const codesSectionRef = useRef<HTMLDivElement | null>(null);
     const canRegenerateCodes = recoveryCodesList.length > 0 && codesAreVisible;
+    const { user } = usePage().props.auth;
+    const generateRoute = user?.isPlatformUser ? adminRegenerateRecoveryCodes.form() : vendorRegenerateRecoveryCodes.form()
 
     const toggleCodesVisibility = useCallback(async () => {
         if (!codesAreVisible && !recoveryCodesList.length) {
@@ -81,7 +84,7 @@ export default function TwoFactorRecoveryCodes({
 
                     {canRegenerateCodes && (
                         <Form
-                            {...regenerateRecoveryCodes.form()}
+                            {...generateRoute}
                             options={{ preserveScroll: true }}
                             onSuccess={fetchRecoveryCodes}
                         >

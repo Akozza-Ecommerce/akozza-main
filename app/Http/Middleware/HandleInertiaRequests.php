@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\UserResource;
+use App\Support\Navigation\NavigationBuilder;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -21,10 +23,19 @@ class HandleInertiaRequests extends Middleware
      *
      * @see https://inertiajs.com/asset-versioning
      */
-    public function version(Request $request): ?string
-    {
-        return parent::version($request);
-    }
+    // public function version(Request $request): ?string
+    // {
+    //     // Cache the computed version for the lifetime of the PHP process.
+    //     // Avoids spurious version changes during development that trigger
+    //     // Inertia full-page reloads on every request.
+    //     static $cached = null;
+
+    //     if ($cached !== null) {
+    //         return $cached;
+    //     }
+
+    //     return $cached = parent::version($request);
+    // }
 
     /**
      * Define the props that are shared by default.
@@ -39,9 +50,10 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ? UserResource::make($request->user()) : null,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'navigation' => app()->make(NavigationBuilder::class)->for($request->user() ? $request->user() : null),
         ];
     }
 }
