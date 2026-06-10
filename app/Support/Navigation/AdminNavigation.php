@@ -17,6 +17,11 @@ class AdminNavigation
                 'href' => route('admin.vendors.index'),
                 'icon' => 'Users',
             ],
+            [
+                'title' => 'Tenants',
+                'href' => route('admin.tenants.index'),
+                'icon' => 'Users',
+            ],
         ];
     }
 }

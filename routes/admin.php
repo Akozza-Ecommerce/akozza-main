@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthViewsController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\TenantController;
 use App\Http\Controllers\Admin\VendorController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ Route::domain(config('app.admin_dashboard_domain'))->name('admin.')->group(funct
 
         Route::prefix('dashboard')->group(function () {
             Route::resource('vendors', VendorController::class);
+            Route::resource('tenants', TenantController::class);
         });
     });
 
