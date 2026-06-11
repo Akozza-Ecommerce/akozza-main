@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Vendor\AuthViewsController;
 use App\Http\Controllers\Vendor\DashboardController;
+use App\Http\Controllers\Vendor\StoreController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\RoutePath;
 
@@ -11,9 +12,9 @@ Route::domain(config('app.vendor_dashboard_domain'))->name('vendor.')->group(fun
     Route::middleware(['webauth:vendor', 'verified'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Route::prefix('dashboard')->group(function () {
-        //     Route::resource('vendors', VendorController::class);
-        // });
+        Route::prefix('dashboard')->group(function () {
+            Route::resource('stores', StoreController::class);
+        });
     });
 
     // Auth routes for vendor

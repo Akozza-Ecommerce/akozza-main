@@ -11,6 +11,7 @@ export type * from './category';
 export type * from './order';
 export type * from './tenant';
 export type * from './vendor';
+export type * from './store';
 
 export interface MetaPagination {
     current_page: number;

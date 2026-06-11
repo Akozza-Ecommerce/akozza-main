@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -42,6 +44,11 @@ class User extends Authenticatable
         return $query->whereHas('roles', function ($q) {
             $q->where('name', 'vendor');
         })->orWhereNotIn('type', [UserType::PLATFORM_ADMIN, UserType::PLATFORM_STAFF]);
+    }
+
+    public function ownedTenant(): HasOne
+    {
+        return $this->hasOne(Tenant::class, 'owner_id');
     }
 
     public function isPlatformUser(): bool

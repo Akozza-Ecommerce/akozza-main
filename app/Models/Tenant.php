@@ -42,4 +42,9 @@ class Tenant extends BaseTenant
     {
         return $this->hasMany(Category::class);
     }
+
+    public function stores(): HasMany
+    {
+        return $this->hasMany(Store::class);
+    }
 }

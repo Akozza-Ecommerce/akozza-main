@@ -13,11 +13,11 @@ class VendorNavigation
                 'icon' => 'LayoutGrid',
             ],
 
-            // [
-            //     'title' => 'Vendors',
-            //     'href' => route('vendors.index'),
-            //     'icon' => 'Users',
-            // ],
+            [
+                'title' => 'Stores',
+                'href' => route('vendor.stores.index'),
+                'icon' => 'Box',
+            ],
         ];
     }
 }
