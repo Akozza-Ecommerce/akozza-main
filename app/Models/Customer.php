@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 #[Fillable(['user_id', 'tenant_id', 'store_id', 'name', 'phone_number', 'points'])]
 class Customer extends Model
 {
+    use BelongsToTenant;
     /**
      * Get the attributes that should be cast.
      *

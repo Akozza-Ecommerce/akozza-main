@@ -7,14 +7,16 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 #[Fillable([
     'user_id', 'order_id', 'customer_id', 'number', 'discount_amount', 'coupon_amount',
     'coupon_id', 'tax_rate', 'tax_amount', 'due_amount', 'paid_amount', 'subtotal', 
-    'total_amount', 'note', 'pdf', 'status', 'date'
+    'total_amount', 'note', 'pdf', 'status', 'date', 'tenant_id', 'store_id'
 ])]
 class Invoice extends Model
 {
+    use BelongsToTenant;
     /**
      * Get the attributes that should be cast.
      *

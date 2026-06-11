@@ -1,21 +1,32 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Vendor;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = CategoryResource::collection(Category::latest()->paginate(12)->withQueryString());
+        $tenantId = $request->user()->active_tenant_id;
+        $storeId = $request->user()->active_store_id;
 
-        return inertia('categories/index', compact('categories'));
+        $categories = Category::where('tenant_id', $tenantId)
+            ->where('store_id', $storeId)
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        return inertia('vendor/categories/index', [
+            'categories' => CategoryResource::collection($categories)
+        ]);
     }
 
     /**
@@ -23,7 +34,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return inertia('categories/create');
+        return inertia('vendor/categories/create');
     }
 
     /**
@@ -32,10 +43,12 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         $data = $request->validated();
+        $data['tenant_id'] = $request->user()->active_tenant_id;
+        $data['store_id'] = $request->user()->active_store_id;
 
         Category::create($data);
 
-        return back()->with('success', 'Category Stored Successfully!');
+        return to_route('vendor.categories.index')->with('success', 'Category Stored Successfully!');
     }
 
     /**
@@ -43,7 +56,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return inertia('categories/show', [
+        return inertia('vendor/categories/show', [
             'category' => new CategoryResource($category)
         ]);
     }
@@ -53,7 +66,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return inertia('categories/edit', [
+        return inertia('vendor/categories/edit', [
             'category' => new CategoryResource($category)
         ]);
     }
@@ -67,7 +80,7 @@ class CategoryController extends Controller
 
         $category->update($data);
 
-        return back()->with('success', 'Category Updated Successfully!');
+        return to_route('vendor.categories.index')->with('success', 'Category Updated Successfully!');
     }
 
     /**
@@ -77,6 +90,6 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return back()->with('success', 'Category Deleted Successfully!');
+        return to_route('vendor.categories.index')->with('success', 'Category Deleted Successfully!');
     }
 }

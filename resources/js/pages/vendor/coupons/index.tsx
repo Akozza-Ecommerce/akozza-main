@@ -6,7 +6,7 @@ import {
 } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 
-import { create, destroy, edit, index, show } from '@/routes/coupons';
+import { create, destroy, edit, index, show } from '@/routes/vendor/coupons';
 import type { Coupon, PaginatedType } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { Pencil, Plus, Trash2, Eye } from 'lucide-react';

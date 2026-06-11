@@ -11,7 +11,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-import { create, index, store } from '@/routes/products';
+import { create, index, store } from '@/routes/vendor/products';
 import { Link, useForm } from '@inertiajs/react';
 import { Category } from '@/types';
 

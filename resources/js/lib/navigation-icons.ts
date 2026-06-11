@@ -4,6 +4,11 @@ import {
     Users,
     LayoutGrid,
     CreditCard,
+    Box,
+    Ticket,
+    Layers,
+    ShoppingCart,
+    FileText,
 } from 'lucide-react';
 
 export const icons = {
@@ -11,4 +16,9 @@ export const icons = {
     Users,
     LayoutGrid,
     CreditCard,
+    Box,
+    Ticket,
+    Layers,
+    ShoppingCart,
+    FileText,
 };

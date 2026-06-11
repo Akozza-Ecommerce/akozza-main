@@ -1,7 +1,7 @@
 import { PageHeader, StatusBadge } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 
-import { edit, index } from '@/routes/coupons';
+import { edit, index } from '@/routes/vendor/coupons';
 import type { Coupon } from '@/types';
 import { Link } from '@inertiajs/react';
 import { formatCurrency, formatDate } from '@/lib/utils';

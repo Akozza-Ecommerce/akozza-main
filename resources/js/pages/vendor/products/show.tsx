@@ -1,7 +1,7 @@
 import { PageHeader, StatusBadge } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 
-import { edit, index, show } from '@/routes/products';
+import { edit, index, show } from '@/routes/vendor/products';
 import type { Product } from '@/types';
 import { Link } from '@inertiajs/react';
 import { formatCurrency, formatDate } from '@/lib/utils';

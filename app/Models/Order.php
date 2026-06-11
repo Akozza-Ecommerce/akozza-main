@@ -9,13 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 #[Fillable([
     'user_id', 'customer_id', 'number',
-    'subtotal', 'note', 'status', 'date'
+    'subtotal', 'note', 'status', 'date', 'tenant_id', 'store_id'
 ])]
 class Order extends Model
 {
+    use BelongsToTenant;
 
     protected $casts = [
         'status' => OrderStatus::class

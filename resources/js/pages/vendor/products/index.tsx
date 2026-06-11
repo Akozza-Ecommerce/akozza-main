@@ -1,7 +1,7 @@
 import { PageHeader, DataTable, StatusBadge, DeleteDialog } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 
-import { create, destroy, edit, index, show } from '@/routes/products';
+import { create, destroy, edit, index, show } from '@/routes/vendor/products';
 import type { Product, PaginatedType } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { Pencil, Plus, Trash2, Eye } from 'lucide-react';

@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Vendor;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CouponRequest;
 use App\Http\Resources\CouponResource;
 use App\Models\Coupon;
 use App\Services\CouponService;
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class CouponController extends Controller
 {
@@ -16,22 +18,33 @@ class CouponController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $coupons = CouponResource::collection(Coupon::latest()->paginate(12)->withQueryString());
-        return Inertia::render('coupons/index', [
-            'coupons' => $coupons
+        $tenantId = $request->user()->active_tenant_id;
+        $storeId = $request->user()->active_store_id;
+
+        $coupons = Coupon::where('tenant_id', $tenantId)
+            ->where('store_id', $storeId)
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        return inertia('vendor/coupons/index', [
+            'coupons' => CouponResource::collection($coupons)
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return Inertia::render('coupons/create', [
-            'products' => \App\Models\Product::active()->get(),
-            'categories' => \App\Models\Category::active()->get(),
+        $tenantId = $request->user()->active_tenant_id;
+        $storeId = $request->user()->active_store_id;
+
+        return inertia('vendor/coupons/create', [
+            'products' => Product::where('tenant_id', $tenantId)->where('store_id', $storeId)->active()->get(),
+            'categories' => Category::where('tenant_id', $tenantId)->where('store_id', $storeId)->active()->get(),
         ]);
     }
 
@@ -41,8 +54,9 @@ class CouponController extends Controller
     public function store(CouponRequest $request)
     {
         $data = $request->validated();
-
-        $data['user_id'] = $request->user()->id ?? 1;
+        $data['user_id'] = $request->user()->id;
+        $data['tenant_id'] = $request->user()->active_tenant_id;
+        $data['store_id'] = $request->user()->active_store_id;
 
         $coupon = Coupon::create($data);
 
@@ -54,7 +68,7 @@ class CouponController extends Controller
             $this->couponService->saveCouponTargets($coupon, $request->target_ids);
         }
 
-        return redirect()->route('coupons.index')->with('success', 'Coupon created successfully.');
+        return to_route('vendor.coupons.index')->with('success', 'Coupon created successfully.');
     }
 
     /**
@@ -63,7 +77,7 @@ class CouponController extends Controller
     public function show(Coupon $coupon)
     {
         $coupon->load(['days', 'targets.product', 'targets.category']);
-        return Inertia::render('coupons/show', [
+        return inertia('vendor/coupons/show', [
             'coupon' => new CouponResource($coupon)
         ]);
     }
@@ -71,13 +85,16 @@ class CouponController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Coupon $coupon)
+    public function edit(Request $request, Coupon $coupon)
     {
+        $tenantId = $request->user()->active_tenant_id;
+        $storeId = $request->user()->active_store_id;
+
         $coupon->load(['days', 'targets']);
-        return Inertia::render('coupons/edit', [
+        return inertia('vendor/coupons/edit', [
             'coupon' => new CouponResource($coupon),
-            'products' => \App\Models\Product::active()->get(),
-            'categories' => \App\Models\Category::active()->get(),
+            'products' => Product::where('tenant_id', $tenantId)->where('store_id', $storeId)->active()->get(),
+            'categories' => Category::where('tenant_id', $tenantId)->where('store_id', $storeId)->active()->get(),
         ]);
     }
 
@@ -98,7 +115,7 @@ class CouponController extends Controller
             $this->couponService->saveCouponTargets($coupon, $request->target_ids);
         }
 
-        return redirect()->route('coupons.index')->with('success', 'Coupon updated successfully.');
+        return to_route('vendor.coupons.index')->with('success', 'Coupon updated successfully.');
     }
 
     /**
@@ -108,6 +125,6 @@ class CouponController extends Controller
     {
         $coupon->delete();
 
-        return redirect()->route('coupons.index')->with('success', 'Coupon deleted successfully.');
+        return to_route('vendor.coupons.index')->with('success', 'Coupon deleted successfully.');
     }
 }

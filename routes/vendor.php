@@ -3,6 +3,13 @@
 use App\Http\Controllers\Vendor\AuthViewsController;
 use App\Http\Controllers\Vendor\DashboardController;
 use App\Http\Controllers\Vendor\StoreController;
+use App\Http\Controllers\Vendor\CategoryController;
+use App\Http\Controllers\Vendor\CustomerController;
+use App\Http\Controllers\Vendor\ProductController;
+use App\Http\Controllers\Vendor\PaymentMethodController;
+use App\Http\Controllers\Vendor\OrderController;
+use App\Http\Controllers\Vendor\InvoiceController;
+use App\Http\Controllers\Vendor\CouponController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\RoutePath;
 
@@ -14,6 +21,13 @@ Route::domain(config('app.vendor_dashboard_domain'))->name('vendor.')->group(fun
 
         Route::prefix('dashboard')->group(function () {
             Route::resource('stores', StoreController::class);
+            Route::resource('categories', CategoryController::class);
+            Route::resource('customers', CustomerController::class);
+            Route::resource('products', ProductController::class);
+            Route::resource('payment-methods', PaymentMethodController::class);
+            Route::resource('orders', OrderController::class)->except(['destroy']);
+            Route::resource('invoices', InvoiceController::class)->only(['index', 'show']);
+            Route::resource('coupons', CouponController::class);
         });
     });
 

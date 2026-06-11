@@ -1,23 +1,31 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Vendor;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentMethodRequest;
 use App\Http\Resources\PaymentMethodResource;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class PaymentMethodController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $paymentMethods = PaymentMethodResource::collection(PaymentMethod::latest()->paginate(12)->withQueryString());
-        return Inertia::render('payment-methods/index', [
-            'paymentMethods' => $paymentMethods
+        $tenantId = $request->user()->active_tenant_id;
+        $storeId = $request->user()->active_store_id;
+
+        $paymentMethods = PaymentMethod::where('tenant_id', $tenantId)
+            ->where('store_id', $storeId)
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        return inertia('vendor/payment-methods/index', [
+            'paymentMethods' => PaymentMethodResource::collection($paymentMethods)
         ]);
     }
 
@@ -26,7 +34,7 @@ class PaymentMethodController extends Controller
      */
     public function create()
     {
-        return Inertia::render('payment-methods/create');
+        return inertia('vendor/payment-methods/create');
     }
 
     /**
@@ -35,12 +43,13 @@ class PaymentMethodController extends Controller
     public function store(PaymentMethodRequest $request)
     {
         $data = $request->validated();
-
         $data['user_id'] = $request->user()->id;
+        $data['tenant_id'] = $request->user()->active_tenant_id;
+        $data['store_id'] = $request->user()->active_store_id;
 
         PaymentMethod::create($data);
 
-        return redirect()->route('payment-methods.index')->with('success', 'Payment method created successfully.');
+        return to_route('vendor.payment-methods.index')->with('success', 'Payment method created successfully.');
     }
 
     /**
@@ -48,7 +57,7 @@ class PaymentMethodController extends Controller
      */
     public function show(PaymentMethod $paymentMethod)
     {
-        return Inertia::render('payment-methods/show', [
+        return inertia('vendor/payment-methods/show', [
             'paymentMethod' => new PaymentMethodResource($paymentMethod)
         ]);
     }
@@ -58,7 +67,7 @@ class PaymentMethodController extends Controller
      */
     public function edit(PaymentMethod $paymentMethod)
     {
-        return Inertia::render('payment-methods/edit', [
+        return inertia('vendor/payment-methods/edit', [
             'paymentMethod' => new PaymentMethodResource($paymentMethod)
         ]);
     }
@@ -72,7 +81,7 @@ class PaymentMethodController extends Controller
 
         $paymentMethod->update($data);
 
-        return redirect()->route('payment-methods.index')->with('success', 'Payment method updated successfully.');
+        return to_route('vendor.payment-methods.index')->with('success', 'Payment method updated successfully.');
     }
 
     /**
@@ -82,6 +91,6 @@ class PaymentMethodController extends Controller
     {
         $paymentMethod->delete();
 
-        return redirect()->route('payment-methods.index')->with('success', 'Payment method deleted successfully.');
+        return to_route('vendor.payment-methods.index')->with('success', 'Payment method deleted successfully.');
     }
 }

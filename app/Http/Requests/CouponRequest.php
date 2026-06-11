@@ -25,7 +25,7 @@ class CouponRequest extends FormRequest
     {
         $couponId = $this->route('coupon')?->id;
         return [
-            'code' => ['required', 'string', 'max:255', Rule::unique('coupons')->ignore($couponId)],
+            'code' => ['required', 'string', 'max:255', Rule::unique('coupons')->where('tenant_id', $this->user()?->active_tenant_id)->ignore($couponId)],
             'type' => 'required|string|in:percentage,fixed',
             'value' => 'required|numeric|min:0',
             'is_active' => 'boolean',

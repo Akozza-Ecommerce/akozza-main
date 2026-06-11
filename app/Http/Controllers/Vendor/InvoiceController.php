@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Vendor;
 
-use App\Http\Requests\InvoiceRequest;
+use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Http\Resources\InvoiceResource;
 use App\Services\InvoiceService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -17,11 +15,20 @@ class InvoiceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $invoices = InvoiceResource::collection(Invoice::with(['customer', 'payments'])->latest()->paginate(12)->withQueryString());
-        return Inertia::render('invoices/index', [
-            'invoices' => $invoices
+        $tenantId = $request->user()->active_tenant_id;
+        $storeId = $request->user()->active_store_id;
+
+        $invoices = Invoice::where('tenant_id', $tenantId)
+            ->where('store_id', $storeId)
+            ->with(['customer', 'payments'])
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        return inertia('vendor/invoices/index', [
+            'invoices' => InvoiceResource::collection($invoices)
         ]);
     }
 
@@ -31,7 +38,7 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         $invoice->load(['customer', 'payments', 'payments.paymentMethod', 'coupon', 'order.items.product', 'user']);
-        return Inertia::render('invoices/show', [
+        return inertia('vendor/invoices/show', [
             'invoice' => new InvoiceResource($invoice)
         ]);
     }

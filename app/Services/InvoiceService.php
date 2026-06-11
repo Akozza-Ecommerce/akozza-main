@@ -52,6 +52,8 @@ class InvoiceService
                 'due_amount' => $amounts['totalAmount'] - $paidAmount,
                 'status' => $invoiceStatus,
                 'notes' => $data['notes'] ?? null,
+                'tenant_id' => $data['tenant_id'] ?? null,
+                'store_id' => $data['store_id'] ?? null,
             ]);
 
             $this->storeInvoicePayments($invoice, $data['payments']);

@@ -1,7 +1,7 @@
 import { PageHeader, DataTable, StatusBadge, DeleteDialog } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 
-import { create, destroy, edit, index } from '@/routes/payment-methods';
+import { create, destroy, edit, index } from '@/routes/vendor/payment-methods';
 import type { PaymentMethod, PaginatedType } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';

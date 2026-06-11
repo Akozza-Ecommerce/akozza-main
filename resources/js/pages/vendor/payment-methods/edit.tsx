@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
-import { edit, index, update } from '@/routes/payment-methods';
+import { edit, index, update } from '@/routes/vendor/payment-methods';
 import type { PaymentMethod } from '@/types';
 import { Link, useForm } from '@inertiajs/react';
 

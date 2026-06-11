@@ -3,44 +3,34 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { MultiSelect } from '@/components/ui/multi-select';
-
-import { edit, index, update } from '@/routes/coupons';
-import type { Coupon, Product, Category } from '@/types';
+import { create, index, store } from '@/routes/vendor/coupons';
 import { Link, useForm } from '@inertiajs/react';
+import type { Product, Category } from '@/types';
+import { useState } from 'react';
 
 const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-export default function Edit({ coupon, products, categories }: { coupon: Coupon; products: Product[]; categories: Category[] }) {
-    // Format dates for datetime-local input
-    const formatDateTimeLocal = (dateString?: string) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toISOString().slice(0, 16);
-    };
-
-    const initialTargetIds = coupon.target === 'product'
-        ? (coupon.targets?.map(t => t.product_id?.toString()).filter(Boolean) as string[]) || []
-        : (coupon.targets?.map(t => t.category_id?.toString()).filter(Boolean) as string[]) || [];
-
-    const { data, setData, put, processing, errors } = useForm({
-        code: coupon.code,
-        type: coupon.type,
-        value: coupon.value.toString(),
-        limit: coupon.limit?.toString() || '10',
-        minimum_invoice_amount: coupon.minimum_invoice_amount?.toString() || '0',
-        note: coupon.note || '',
-        target: coupon.target || 'product',
-        target_ids: initialTargetIds,
-        days: coupon.days?.map(d => d.day_of_week) || [],
-        start_date: formatDateTimeLocal(coupon.start_date),
-        end_date: formatDateTimeLocal(coupon.end_date),
-        is_active: !!coupon.is_active,
+export default function Create({ products, categories }: { products: Product[]; categories: Category[] }) {
+    const { data, setData, post, processing, errors } = useForm({
+        code: '',
+        type: 'percentage', // percentage or fixed
+        value: '',
+        limit: '10',
+        minimum_invoice_amount: '0',
+        note: '',
+        target: 'product', // product or category
+        target_ids: [] as string[],
+        days: [] as string[],
+        start_date: '',
+        end_date: '',
+        is_active: true,
     });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(update(coupon).url);
+        post(store.url());
     };
 
     const toggleDay = (day: string) => {
@@ -53,7 +43,7 @@ export default function Edit({ coupon, products, categories }: { coupon: Coupon;
 
     return (
         <div className="flex flex-col gap-6 p-8">
-            <PageHeader title="Edit Coupon" description={`Update details and limitations for coupon ${coupon.code}.`} />
+            <PageHeader title="Create Coupon" description="Add a new discount code with limits and rules." />
 
             <form onSubmit={submit} className="space-y-6">
                 <div className="bg-card text-card-foreground rounded-xl border p-6 shadow-sm space-y-6">
@@ -200,6 +190,8 @@ export default function Edit({ coupon, products, categories }: { coupon: Coupon;
                             </select>
                         </FormField>
 
+
+
                         <FormField
                             id="target_ids"
                             label={data.target === 'product' ? 'Select Products' : 'Select Categories'}
@@ -230,7 +222,7 @@ export default function Edit({ coupon, products, categories }: { coupon: Coupon;
 
                 <div className="flex gap-4 pt-4 border-t border-neutral-200 dark:border-neutral-800">
                     <Button type="submit" disabled={processing}>
-                        {processing ? 'Saving...' : 'Update Coupon'}
+                        {processing ? 'Saving...' : 'Save Coupon'}
                     </Button>
                     <Button type="button" variant="outline" asChild>
                         <Link href={index()}>Cancel</Link>
@@ -241,9 +233,9 @@ export default function Edit({ coupon, products, categories }: { coupon: Coupon;
     );
 }
 
-Edit.layout = {
+Create.layout = {
     breadcrumbs: [
         { title: 'Coupons', href: index() },
-        { title: 'Edit', href: '#' },
+        { title: 'Create', href: create() },
     ],
 };

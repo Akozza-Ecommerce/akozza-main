@@ -1,23 +1,31 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Vendor;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = CustomerResource::collection(Customer::latest()->paginate(12)->withQueryString());
-        return Inertia::render('customers/index', [
-            'customers' => $customers
+        $tenantId = $request->user()->active_tenant_id;
+        $storeId = $request->user()->active_store_id;
+
+        $customers = Customer::where('tenant_id', $tenantId)
+            ->where('store_id', $storeId)
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        return inertia('vendor/customers/index', [
+            'customers' => CustomerResource::collection($customers)
         ]);
     }
 
@@ -26,7 +34,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return Inertia::render('customers/create');
+        return inertia('vendor/customers/create');
     }
 
     /**
@@ -35,12 +43,13 @@ class CustomerController extends Controller
     public function store(CustomerRequest $request)
     {
         $data = $request->validated();
-
-        $data['user_id'] = $request->user()->id ?? 1;
+        $data['user_id'] = $request->user()->id;
+        $data['tenant_id'] = $request->user()->active_tenant_id;
+        $data['store_id'] = $request->user()->active_store_id;
 
         Customer::create($data);
 
-        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
+        return to_route('vendor.customers.index')->with('success', 'Customer created successfully.');
     }
 
     /**
@@ -48,7 +57,7 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        return Inertia::render('customers/show', [
+        return inertia('vendor/customers/show', [
             'customer' => new CustomerResource($customer)
         ]);
     }
@@ -58,7 +67,7 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
-        return Inertia::render('customers/edit', [
+        return inertia('vendor/customers/edit', [
             'customer' => new CustomerResource($customer)
         ]);
     }
@@ -72,7 +81,7 @@ class CustomerController extends Controller
 
         $customer->update($validated);
 
-        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+        return to_route('vendor.customers.index')->with('success', 'Customer updated successfully.');
     }
 
     /**
@@ -82,6 +91,6 @@ class CustomerController extends Controller
     {
         $customer->delete();
 
-        return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
+        return to_route('vendor.customers.index')->with('success', 'Customer deleted successfully.');
     }
 }

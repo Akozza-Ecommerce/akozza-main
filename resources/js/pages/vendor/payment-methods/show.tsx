@@ -1,7 +1,7 @@
 import { PageHeader, StatusBadge } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 
-import { edit, index } from '@/routes/payment-methods';
+import { edit, index } from '@/routes/vendor/payment-methods';
 import type { PaymentMethod } from '@/types';
 import { Link } from '@inertiajs/react';
 import { formatDate } from '@/lib/utils';

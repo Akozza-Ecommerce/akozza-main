@@ -22,7 +22,11 @@ class CouponService
             $coupon->days()->delete();
         }
         foreach ($days as $day) {
-            $coupon->days()->create(['day_of_week' => $day]);
+            $coupon->days()->create([
+                'day_of_week' => $day,
+                'tenant_id' => $coupon->tenant_id,
+                'store_id' => $coupon->store_id,
+            ]);
         }
     }
 
@@ -37,9 +41,17 @@ class CouponService
         
         foreach ($targetIds as $id) {
             if ($coupon->target === 'product') {
-                $coupon->targets()->create(['product_id' => $id]);
+                $coupon->targets()->create([
+                    'product_id' => $id,
+                    'tenant_id' => $coupon->tenant_id,
+                    'store_id' => $coupon->store_id,
+                ]);
             } else {
-                $coupon->targets()->create(['category_id' => $id]);
+                $coupon->targets()->create([
+                    'category_id' => $id,
+                    'tenant_id' => $coupon->tenant_id,
+                    'store_id' => $coupon->store_id,
+                ]);
             }
         }
     }

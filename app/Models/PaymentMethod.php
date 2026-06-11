@@ -7,11 +7,12 @@ use App\Concerns\Traits\Scopes\HasDefaultState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
-#[Fillable(['user_id', 'name', 'is_default', 'is_active'])]
+#[Fillable(['user_id', 'name', 'is_default', 'is_active', 'tenant_id', 'store_id'])]
 class PaymentMethod extends Model
 {
-    use HasActiveState, HasDefaultState;
+    use HasActiveState, HasDefaultState, BelongsToTenant;
 
     /**
      * Get the attributes that should be cast.

@@ -17,12 +17,22 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'username', 'email', 'password', 'type', 'status'])]
+#[Fillable(['name', 'username', 'email', 'password', 'type', 'status', 'active_tenant_id', 'active_store_id'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles;
+
+    public function activeTenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class, 'active_tenant_id');
+    }
+
+    public function activeStore(): BelongsTo
+    {
+        return $this->belongsTo(Store::class, 'active_store_id');
+    }
 
     /**
      * Get the attributes that should be cast.

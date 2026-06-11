@@ -32,6 +32,8 @@ class OrderService
                 'status' => OrderStatus::PENDING,
                 'note' => $data['note'] ?? null,
                 'date' => $data['date'],
+                'tenant_id' => $data['tenant_id'] ?? null,
+                'store_id' => $data['store_id'] ?? null,
             ]);
 
             $order->load('invoices.payments');
